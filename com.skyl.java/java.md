@@ -242,6 +242,11 @@
       + 线程池大小的选定
          1. CPU 密集型： 线程数 = 按照核数 或者 核数+1 设定
          2. I/O 密集型 ： 线程数 = CPU核数（1 + 平均等待时间/平均工作时间）
+   + 并发工具类
+       + 闭锁 CountDownLatch  让主线程等待一组事件发生后继续执行
+       + 栅栏 CyclicBarrier  阻塞当前线程，等待其他线程。
+       + 信号量 Semaphore 控制某个资源可以被同时访问的线程个数 
+       + 交换器 Exchanger  两个线程到达同步点后，相互交换数据
 #### Java 异常体系 
    + Error 和 Exception的区别。 前者是程序无法处理的错误，后者是可以处理的异常。
    + Erro 是需要JVM 需要识别出的。RuntimeException是程序应该负担的责任。Checked Exception可检查异常是Java编译器应该负担的责任。
@@ -269,4 +274,27 @@
       + 扩容的问题
          1. 多线程环境下，调整大小会存在条件竞争，容易造成死锁
          2. rehashing是一个比较耗时的过程
-    
+   + CoucurrentHashMap。CAS + synchronized 使锁细化
+      + put方法的逻辑
+        1. 判断node数组是否初始化，没有则进行初始化操作
+        2. 通过hash定位数组的索引坐标，是否有node节点，如果没有则使用CAS进行添加，添加失败则进入下次循环
+        3. 检查到内部正在扩容，就帮助它一块扩容
+        4. 如果f !=null,则使用synchronized锁住f元素
+            1. 如果是node则执行链表的添加操作
+            2. 如果是treenode则执行树的添加操作
+        5. 判断链表长度已经达到临界值8，当然这个8是默认值，大家也可以去做调整，当节点数超过这个值就需要把链表转换为树结构
+      + 总结
+        1. 首先使用无所操作CAS插入头节点，失败则循环重试
+        2. 若头节点已存在，则尝试获取头节点的同步锁，再进行操作
+   +  HashMap,HashTabel,CoucurrentHashMap
+       1. HashMap线程不安全，数组+链表+红黑树
+       2. HashTable 线程安全，锁住整个对象，数组+链表
+       3. ConcurrentHashMap线程安全，CAS+同步锁，数组+链表+红黑树
+#### Java IO 体系
+  + BIO : InputStream OutputStream Reader 和Writer. 同步阻塞 
+  + NIO : 构建多路复用的，同步非阻塞IO 操作。 Channels，Buffer，Selectors
+  + AIO : 基于时间和回调机制
+    1. 基于回调：实现completionHandler接口，调用时触发回调函数
+    2. 返回future:通过isDone()查看是否准备好，通过get（）等待返回数据。异步非阻塞 
+     
+  
