@@ -1,6 +1,6 @@
-###Spring
+### Spring
 
-####SpingIOC 
+#### SpingIOC 
 + IOC 原理
     1. 依赖倒置原则（DI） -(思路)》 
         2. 控制反转（IOC） 第三方容器（IOC Container）-（方法）》 
