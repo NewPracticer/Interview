@@ -2,9 +2,9 @@
 + 平台无关性
     1. Java源码首先被编译成字节码，再由不同平台的JVM进行解析，Java语言在不同的平台上运行时不需要进行重新编译，Java虚拟机在执行字节码的时候，把字节码转换成具体平台上的机器指令
 + 类从编译到执行的过程
-    1. 编译器将Robot.java源文件编译为Robot.class字节码文件。
-    2. ClassLoader 将字节码转换为JVM中的Class<Robot>对象
-    3. JVM利用Class<Robot>对象实例化为Robot对象
+    1. 编译器将.java源文件编译为.class字节码文件。
+    2. ClassLoader 将字节码转换为JVM中的Class对象
+    3. JVM利用Class对象实例化为Robot对象
 ####  JVM
    1. classloader:依据特定格式，加载class文件到内存
         + ClassLoader负责通过将Class文件里的二进制数据流装载进系统，然后交给Java虚拟机进行连接、初始化等操作。
