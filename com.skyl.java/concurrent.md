@@ -62,7 +62,7 @@
      2. 数据同步。多份数据保持一致。缓存和存储的同步，不同机房订单数据的同步。
      + Java同步的五层结构
         1. 开发工具层：提供开箱即用的同步工具(Synchronizer)
-        2. 开发框架层：提供开发同步工具的框架AQS（AQS不仅仅用于开发同步工具，还用于的Non-Blocking，也称为Lock-Free的工具）
+        2. 开发框架层：提供开发同步工具的框架[AQS](https://pdai.tech/md/java/thread/java-thread-x-lock-AbstractQueuedSynchronizer.html)（AQS不仅仅用于开发同步工具，还用于的Non-Blocking，也称为Lock-Free的工具）
             1. 中断。 interrupt 
             2. 超时获取。 
             3. tryAcquire（非阻塞版获取锁）
@@ -70,10 +70,31 @@
             5. acquire（阻塞版获取锁）
             6. Condition
             7. instate(CAS)
-            8. 队列：CAS等待队列。条件等待队列
+            8. CLH队列：CAS等待队列。条件等待队列
         3. JVM层 
         4. Java Native Interface（JNI）层（用于调用本地操作系统API） 
         5. 操作系统层
+     + 信号量。允许N个线程同时进入临界区。 控制并发量，进行流量控制。
+     + CycleBarrier。多个线程在一个屏障上互相等待，直到所有线程都到达了，再执行一个同步程序。
+        1. 解决多个线程协作（通信）处理任务的问题
+     + CountDownLatch。 相当于只有一代CycleBarrier。实现了一套屏障机制
+     + Phaser 
+        + 屏障部分领域语言
+            1. 屏障： 合作的线程在屏障上等待。然后进行同步点。
+            2. 同步点：通过屏障后执行的同步代码
+            3. 合作方数量：就是互相等待的线程数量，只有当等待数量达到parties，才会进入同步点
+            4. 到来：代表一个线程到达屏障，并等待，每次有线程到来，+1
+            5. 到达数量：等待的线程数量
+            6. 等待： 代表线程在barrier等待
+            7. 进步： 一个线程通过屏障，称为进步，代表工作有进度
+            8. 开动\下一个阶段：到来的线程数量 = parties，开始进入同步点
+            9. 阶段：类似CycleBarrier的代，每次完成一次开动，phase number 加 1 
+        + per线程能力
+            1. arrive （到达）：在屏障上等待其他合作方，到达线程数+1
+            2. watiAdvance（等待进步）：在屏障上等待其他线程，数量够了就进入同步点
+            3. register（注册）： 相当于声明自己是一个合作方，将parties 增 1
+            4. deregister（注销）： 相当于注销自己，parties 减 1 
+      + Exchanger 利用Exchanger 在生产者，消费者交换Buffer 。线程间交换数据。
    + 互斥锁
      1. 特性
         1. 互斥性：即在同一时间只允许一个线程持有某个对象锁，通过这种特性，来实现多线程的协调机制，这样在同一个时间内只有一个线程对需要同步的代码块进行访问
@@ -90,6 +111,16 @@
         2. 偏向锁 （更偏向之前获取过锁的线程，省去再次进入的锁申请）：减少同一线程获取锁的代价。大多数情况下，锁不存在多线程竞争，总是由同一线程多次获得
         3. 轻量级锁 （由偏向锁升级）： 偏向锁在运行一个线程进入同步块的情况下，当第二个线程加入锁争用的时候，偏向锁就会升级为轻量级锁。
         4. 重量级锁 : 系统级别的锁。由entrySet到 waitingSet
+     4. synchronized 和 reentrantlock的相似点
+        1. 临界区保护（提供锁/解锁能力）
+        2. 可重入 （抢占锁的可以多次执行lock）
+        3. 都提供线程间写作
+        4. 提供锁的升级
+            1. synchonized: 使用monitor。偏向锁-》轻量级锁-》重量级锁
+            2. reentrantlock : AQS 。CAS竞争-》休眠-》排队竞争
+        5. 提供等待队列
+            1. synchonized: 使用monitor,EntrySet和 WaitSet
+            2. reentrantlock: AQS 。 CLH队列。
      4. synchronized 和 reentrantlock的区别
         1. Reentrantlock 实现比 synchronized 更细粒度的控制。调用lock后，必须调用unlock释放锁。
         2. Reentrantlock 公平性，倾向于将锁赋予等待时间最久的线程。synchronized 是非公平锁
@@ -98,6 +129,8 @@
         5. Reentrantlock 可以获取各种锁的信息
         6. Reentrantlock 可以灵活地实现多路通知
         7. 机制：sync 操作Mark Word ，lock 调用unsafe类的park（）方法
+        8. reentrantlock 基于AQS ，synchronized基于Monitor
+        9. reentrantlock 响应线程中断。synchronized不响应
      5. synchronized 和 volatile的区别
         1. volatile 本质是告诉JVM 当前变量在寄存器（工作内存）中的值是不确定的，需要从主存中读取；synchronized则是锁定当前变量，只有当前线程可以访问该变量，其他线程被阻塞住直到该线程完成变量操作为止
         2. volatile 仅能使用在变量级别；synchronized 则可以使用在变量、方法和类级别
@@ -182,3 +215,31 @@
       10. 如果这个线程休眠，也会进入WaitSet。
       11. WaitSet和EntrySet中的线程，当持有线程休眠或者离开时，会一起再次竞争Owner，这个时候不再使用偏向锁和轻量级锁，称为锁的不可降级。
       12.  一旦升级为重量级锁，不会再使用轻量级或者偏向锁。 重量级锁，就是利用操作系统API提供的互斥能力进行竞争。
+   + 内存一致性
+      1. 线性一致: 任何时刻都一致
+      2. 弱一致： 部分时刻一致 。 需要同步元语。锁，信号量，volatie
+      3. 没有一致： 无法确定何时一致
+      + 不一致的原因
+        1. 分级缓存策略以及CPU的多核心，使得跨CPU的线程，使得读取到的不是最新版本
+        2. CPU 指令重排。
+        3. 并发环境
+      + 解决方案 volatile （确保语义上对变量的读、写操作顺序被观察到）
+        1. 对 volatile变量的读写不会被重排到对它后续的读写之后（阻止指令重排）
+        2. 保证写入的值可以马上同步到CPU缓存中（写入后要求CPU马上刷新缓存）
+        3. 保证读取到最新版本的数据
+        4. volatile变量读写时会增加内存屏障
+        5. 保证对volatile的操作happens-before另一个操作
+      + happens- before （如果事件A应该在事件B之前发生，那么观察到的结果也是如此。取保有序性和可见性）
+        1. 单线程规则：单线程对内存的访问符合happens-before规则
+        2. Monitor规则： synchronized对锁的释放，happens-before对锁的获取
+        3. volatile规则： volatile变量的操作happens-before对它的后续操作，并且周围指令不会重排
+        4. Thread start 规则： start调用前的操作 happens-before线程内的程序
+        5. Thread join 规则： 线程的最后一条指令 happens-before join后的第一条指令
+        6. happens-before 传递性：如果A happens-before B, B happens-before C ,那么 A happens-before C 
+   + 线程安全的数据结构(java.util.concurrent下的数据结构)
+      + BlockingQueue
+        1. 抛异常： add/remove
+        2. 非阻塞： offer/pull
+        3. 阻塞： put/take
+      + ThreadLocal
+      
