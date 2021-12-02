@@ -242,4 +242,21 @@
         2. 非阻塞： offer/pull
         3. 阻塞： put/take
       + ThreadLocal
+   + 并发设计思路总结
+      + 锁： 互斥 
+      +  减少锁的范围 
+      + Obstruction Free 
+        + 线程间相互隔离 （一个线程的延迟不影响其他线程进步）
+        + 不要求一定有线程进步，线程最终可以进步 
+        + 嵌套的CAS 
+      + Lock Free (在LockFree的基础上。保证所有线程同时进步)
+        + 线程之间相互隔离（一个线程的隔离，阻塞、故障）不会影响其他线程，同一时刻至少有一个线程可以进步
+        + CLH 队列: 线程通过CAS竞争加入CLH队列
+        + SynchrounousQueue ：线程竞争实现transfer操作（双向队列，双向栈）
+      + Wait Free
+        + 在Lock Free基础上，保证所有线程同时进步
+        + Obstruction Free  -》 Lock Free -》 Wait Free
+        + CopyOnWrite的读线程 
+      + LockLess 和 LockFree区别 
+        + LockLess ： 不用锁的算法通常都是LockLess,线程之间可能会互相影响：例如：阻塞队列，本质还是在排队
       
