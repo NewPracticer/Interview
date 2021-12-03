@@ -116,7 +116,12 @@
                 1. -XX:SuviorRatio:Eden和Survivor的比值：默认8：1
                 2. -XX：NewRation:老年代和年轻代内存大小的比例
                 3. -XX:MaxTenuringThreshold：对象从年轻晋升到老生代经过GC次数的最大阀值
-        + 为什么使用GC 
+        + GC的三个指标
+            1. 吞吐量: 程序工作时间占比。GC没有占用的CPU时间。GCTimeRatio
+                1. 给更大的内存
+                2. 更改GC算法
+                3. 
+            2. 
    + Object的finalize()方法的作用是否与C++的析构函数作用相同
         1. 与C++的析构函数不同，析构函数调用确定，而它的是不确定的。
         2. 将未被引用的对象放置于F-Queue队列
