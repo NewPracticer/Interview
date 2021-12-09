@@ -7,7 +7,7 @@
    + 压力点
       1. 不希望每次减库存操作都写DB
       2. 不希望每次读取库存都通过DB
-   + 方案( 服务无状态，批量写入，最终一致性)
+   + 方案( [服务无状态](https://www.redhat.com/zh/topics/cloud-native-apps/stateful-vs-stateless)，批量写入，最终一致性)
       1. 库存服务
       2. Redis(key/value)库存
       3. 库存变更记录（Worker）
