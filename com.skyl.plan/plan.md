@@ -36,7 +36,20 @@
                1. 商家后台更新商品信息到mysql，同时异步更新redis 缓存
             + 查询商品交易信息  -> redis 
                1. 交易系统发生交易时，库存/销量更新到队列，同时队列异步更新到redis 
-        + 交易系统 
+        + 交易系统(支付请求)
+            1. 价格计算校验（商品系统）
+            2. 减库存（商品系统）
+            3. 运费计算(商品系统)
+            4. 优惠券核销（营销系统）
+            5. 发起支付（支付系统对接网关）
+            6. 支付下单（如支付宝，微信）
+                1. 支付成功（支付宝，微信回调）--> 交易系统
+                    1. 加销量（支付宝）
+                1. 支付失败 （支付宝，微信回调）--> 交易系统
+                    1. 回滚库存 （商品系统）
+                    2. 回滚消费券（营销系统）
+            7. 定时任务（订单超时）
+        
 + 减库存
    + 压力点
       1. 不希望每次减库存操作都写DB
@@ -74,6 +87,40 @@
                     1. DB
            1. 订单队列
                1. DB
+   + 交易一致性问题
+       + 重复支付 (发起支付时，插入交易记录到数据库，并且设置状态为初始化，支付成功更新交易记录status 为成功)
+            1. 防重操作 
+                1. select * from order_info where id =""20211020"
+                2. java代码判断 status == "初始" 执行第3步否则直接返回
+                3. update order_info set status = "成功" where id = "20211020"并且发货
+           2. 防重幂等操作 悲观锁
+               1. begin transaction
+               2. select * from order_info where id = "20211020" for update 加库存锁
+               3. java代码判断 status == "初始" 执行第4步，否则直接返回rollback
+               4. update order_info set status =‘成功’where id = '20211020',并且发货
+               5. commit
+           3. 防重幂等操作 乐观锁
+               1. begin transaction
+               2. select * from order_info where id = "20211020" 
+               3. java代码判断 status == "初始" 执行第4步，否则直接返回rollback
+               4. update order_info set status =‘成功’where id = '20211020' and status = ‘初始’,并且发货
+               5. commit
+   + 分布式事务
+       1. 二阶段提交 （强一致性保证） prepare -> ack -> commit  (每个节点都如此操作)
+       2. 异步确保型 
+          1. 采用异步消息的方式确保事务可以最终一致
+          2. 交易表
+          3. fail支付失败待回滚 --> 发送消息 到 消息中间件 
+            1. 优惠券退回 （营销系统）
+            2. 库存回退 （商品系统）
+       3. 事务型消息
+          1. begin transaction 
+          2. send prepare消息 到消息中间件 
+          3. 执行本地事务 
+          4. 执行本地commit
+          5. send commit消息 
+          6. 投递到消费方
+       4. TCC 型。 try，catch，cancel
 + 缓存
    1. 端缓存
    2. 代理缓存

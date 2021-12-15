@@ -160,6 +160,12 @@
     4. 从ES 调优看GC优化策略
         1. heap内存设置成一样防止缓存增加heap空间导致GC频繁
         2. 关闭swap区域防止缺页中断 sudo swap off -a 
+ + 通用JVM工具
+    + jps : 虚拟机进程状态工具
+    + jinfo : jvm参数信息工具
+    + jstat: 查询虚拟机各种运算状态
+    + jstack : 线程快照工具
+    + jmap : heapdump 工具
         
     
              
