@@ -6,9 +6,11 @@
   + 单个线程处理多个Socket 
      + 核心问题：内核分发消息
      + select模型：线程维护一个Socket FD的列表
-        1. 周期性的检查是否有FD变动
+        1. 周期性的遍历检查是否有FD变动
+        2. 缺陷： 1024数组个数的限制。遍历轮询触发到真正有信号的socket连接 
      + epoll模型：内核维护一个高效的二叉搜索树
         1. 已知某个FD发生变化的时候，可以快速知道哪个线程需要处理。
+        2. 优点： 没有1024数组个数的限制。异步回调的方式去执行handler操作
   + BIO/NIO/AIO
      + BIO
         1. API设计：操作会阻塞线程。例如：等待socket连接。
@@ -27,5 +29,14 @@
      + N(new)IO 。 本质是堆外的缓冲区。优化点：减少一次拷贝
         1. DirectMapping。Block API vs Non-Blocking API
         2. epoll模型比较适合Non-Blocking(事件驱动）
++ https 加密 
+  1. Client端 ： ca public key 解码验证证书。
+  2. Client端 : 发送随机摘要到 Server端
+  3. Server端 : 接收到public key 。使用private解码。发送ACK到 Client端。
+  4. Client端与Server端 AES对称加密 通讯
++ http2.0 
+  1. 二进制传输
+  2. 多路复用
+  3. 服务端推送  
           
     
