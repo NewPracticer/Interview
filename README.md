@@ -15,6 +15,9 @@
 + [Middleware](https://github.com/NewPracticer/Interview/blob/main/com.skyl.middleware/middleware.md)
 + [Spring](https://github.com/NewPracticer/Interview/blob/main/com.skyl.spring/spring.md)
 + [Concuurent](https://github.com/NewPracticer/Interview/blob/main/com.skyl.java/concurrent.md)
++ [Plan](https://github.com/NewPracticer/Interview/blob/main/com.skyl.plan/plan.md)
++ [Socket](https://github.com/NewPracticer/Interview/blob/main/com.skyl.communication/socket.md)
++ [JVM](https://github.com/NewPracticer/Interview/blob/main/com.skyl.java/jvm.md)
                     
         
               
