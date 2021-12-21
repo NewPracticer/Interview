@@ -185,7 +185,6 @@
     + jstat: 查询虚拟机各种运算状态
     + jstack : 线程快照工具
     + jmap : heapdump 工具
-+ 内存大小的取舍
     
         
     
