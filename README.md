@@ -10,6 +10,7 @@
     +  凸显能力: 技术经验能力，学习思考能力
 
 + [Java](https://github.com/NewPracticer/Interview/blob/main/com.skyl.java/java.md)
++ [JVM](https://github.com/NewPracticer/Interview/blob/main/com.skyl.java/jvm.md)
 + [Linux](https://github.com/NewPracticer/Interview/blob/main/com.skyl.linux/linux.md)
 + [Database](https://github.com/NewPracticer/Interview/blob/main/com.skyl.database/database.md)
 + [Middleware](https://github.com/NewPracticer/Interview/blob/main/com.skyl.middleware/middleware.md)
@@ -17,7 +18,6 @@
 + [Concuurent](https://github.com/NewPracticer/Interview/blob/main/com.skyl.java/concurrent.md)
 + [Plan](https://github.com/NewPracticer/Interview/blob/main/com.skyl.plan/plan.md)
 + [Socket](https://github.com/NewPracticer/Interview/blob/main/com.skyl.communication/socket.md)
-+ [JVM](https://github.com/NewPracticer/Interview/blob/main/com.skyl.java/jvm.md)
                     
         
               
