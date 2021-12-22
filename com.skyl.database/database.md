@@ -98,6 +98,38 @@
                 3. 事务。行，锁一行数据。列，锁对应的列
             + mysql: 行存储
             + mongdb: 文档存储：存储一个JSON(BSCNI)文档，或者一个文本文档
++ 数据库优化
+  + 查询优化
+    1. 主键查询 千万条记录 1-10ms
+    2. 唯一索引 千万条记录 10-100ms
+    3. 非唯一索引 千万条记录 100-1000ms
+    4. 无索引 百万条记录 1000ms+
+  + 批量写
+    1. for each{ insert into table values (1)}
+    2. Execute once insert into table values(1)
+    3. Sql编译N次和1此的时间与空间复杂度
+    4. 网络消耗的时间复杂度
+    5. 磁盘寻址的复杂度
+  + 单机配置innodb优化
+    + max_connection = 1000 增加最大连接数，默认为100
+    + innodb_file_per_table = 1 可以存储每个innodb表和他的索引在自己的文件中
+    + innodb_buffer_pool_size = 1G 缓存池大小，设置为当前数据库服务内存约60%-80%
+    + innodb_log_file_size = 256M 一般取256M可以兼顾性能和recovery的速度，写满后只能切换日志靠buffer存储
+    + innodb_log_buffer_size= 16M 该参数确保有足够大的日志缓冲区来保存脏数据在被写入到日志文件之前可以继续mysql事务操作
+    + innodb_flush_log_at_trx_commit = 2
+      1. 当为1时，在每个事务提交时，日志缓冲被写到日志文件，对日志文件做到磁盘操作的刷新。Truly ACID。速度慢
+      2. 当为2时，在每个事务提交时，日志缓冲被写到系统缓冲，但不对日志文件做到磁盘操作的刷新，然后根据innodb_flush_log_at_timeout(默认为1s)时间。flush disk只有操作系统崩溃或者掉电才会删除最后一秒的事务，不然不会丢失事务
+      3. 当为0时，效率更高，但安全性差。每秒才write日志任何mysql进程的崩溃会删除崩溃前最后一秒的事务。
+    + innodb_data_file_path = 1bdata1:1G;1bdata3:1G:autoextend指定表数据和索引存储的空间，可以是一个或者多个文件
++ 读写分离
+   + 一主多从 
+      1. 写操作语句并且做事务提交
+      2. master的binlog 同步到 slave
+      3. select 从slave数据库 
++ 分库分表
+   + 垂直拆分
+   + 水平拆分
+   + 多主多从
                  
     
                 
