@@ -4,7 +4,7 @@
 + IOC 原理
     1. 依赖倒置原则（DI） -(思路)》 
         2. 控制反转（IOC） 第三方容器（IOC Container）-（方法）》 
-            3. 依赖注入（DI）(把底层类作为参数传递给上层类，实现上层对下层的控制)。Set注入，接口注入，注解注入，构造器注入。
+                3. 依赖注入（DI）(把底层类作为参数传递给上层类，实现上层对下层的控制)。Set注入，接口注入，注解注入，构造器注入。
         3. IOC Container的优势：避免在各处使用new来创建类，并且可以做到统一维护。创建实例的时候不需要了解其中细节。
 + SpringIOC
    +  SpringIOC容器流程
@@ -99,3 +99,17 @@
   11. listener启动完成
   12. 关闭计时器
   13. 打印启动时间
+#### Springboot 避坑指南
++ Springboot 配置文件
+   1. Springboot使用一个全局的配置文件，且配置文件名是固定的，配置文件的作用是用来修改Springboot自动配置的默认值
+   2. 可以使用applicaiton.properties格式，也可以使用application.yml格式
+   3. 由于YAML格式紧凑且可读性高，所以Springboot支持并推荐使用YAML格式的配置文件
+   4. 由于两种配置文件同时存在的时候，默认优先使用.properties配置文件
++ Springboot配置文件优先级加载顺序
+   1. file:./config/ -> 优先级最高
+   2. file:./ 优先级第二（项目根路径下）
+   3. classpath:/config/ -> 优先级第三（项目 resources/config 下）
+   4. classpath:/ -> (项目resources根目录下)
++ Springboot 多环境配置
+   1. 多环境下使用spring.profile.active可以指定配置文件
+   2. 使用占位符，在启动命令中指定配置文件 
