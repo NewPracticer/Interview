@@ -85,3 +85,17 @@
      1. 真实实现类的逻辑包含在了getBean方法里
      2. getBean方法返回的实际上是Proxy的实例
      3. Proxy实例是Spring采用JDK Proxy 和 CGLIB 动态生成的 
++ Springboot 启动
+  1. 创建SpringApplicaiton
+  2. 初始化构造器Initializer 和 listener
+  3. 调用run方法
+  4. 开启定时器stopwatch
+  5. 根据SpringApplicationRunListener 以及参数来启动环境
+  6. 准备环境配置，注意ConfigFileApplicationListener 是用来加载properties文件的打印banner
+  7. 创建容器上下文
+  8. prepare准备容器上下文，执行之前的initializer初始化，并load在主bean
+  9. refresh容器上下文，里面的onRresh可以启动web server
+  10. afterRefresh 执行初四化完成后要做的操作
+  11. listener启动完成
+  12. 关闭计时器
+  13. 打印启动时间

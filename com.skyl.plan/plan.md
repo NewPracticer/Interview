@@ -132,7 +132,57 @@
    2. 灾备的处理方案
       1. 降级
       2. 限流
-      3. 切流量     
+      3. 切流量  
++ 限流、熔断
+    1. 限流的维度
+       1. 接口限流
+       2. 总限流
+    2. 限流的单位
+       1. 限制并发
+          + 查询接口当前的一个并发量
+            1. 使用计数器。count =0 。 count <= max_sync 。count++ 。 do something count 。 count --
+            2. 令牌桶。 count = max_sync。 count >0 。count --。 do something 。(每隔1s充令牌count = max_sync)
+       2. 限制QPS/TPS 
+    3. 限流的分类
+       1. 单机限流
+       2. 集群限流
+    4. 熔断的本质
+       1. 失败率触发
+       2. 失败总次数出发   
+    5. 熔断的恢复
+       1. 全恢复
+       2. 半转全
++ 360度微服务监控
+  + 监控常用维度
+    1. 接口
+    2. DB
+    3. Redis
+    4. 硬件（CPU，IO Wait,Memory,网卡）
+  + 监控指标
+    1. 接口 TPS/QPS，AVG耗时，95线，99线，99.99线
+    2. CPU load average
+    3. Memory 占用
+    4. IO Wait
+    5. 网卡占用 
+  + 监控工具
+    1. 大众点评开源 CAT 
+    2. Zabbix
++ 保证系统安全的行为 
+  + SQL注入的原理是什么，如何预防
+    1. 做输入校验
+    2. 使用预编译SQL语句执行
+  + XSS 跨站点脚本攻击
+    1. 反射型
+    2. 存储型
+    3. 预防：
+        1. 做输入校验、替换
+        2. 设置cookie为http-only访问方式
+  + CSRF 跨站点请求攻击
+    1. 触发跨站请求
+    2. 预防
+        1. cookie hash
+        2. web token 
+  
     
    
         
