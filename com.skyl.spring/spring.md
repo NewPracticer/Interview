@@ -113,3 +113,36 @@
 + Springboot 多环境配置
    1. 多环境下使用spring.profile.active可以指定配置文件
    2. 使用占位符，在启动命令中指定配置文件 
++ Springboot中编写定时任务
+   1. 两个注释 EnableScheduling Scheduled
+   2. Scheduled 注释。 fixDelay。fixedRate。initalDelay。cron。
+   3. 配置文件中指定定时任务线程数 spring.task.scheduling.pool.size 。
+   4. 自定义定时任务的线程池。编写ScheduleConfig
++ Springboot的异步任务
+   1. EnableAsync
+   2. Async
++ Spring Bean的默认名称生成策略导致的空指针
+   1. 定义一个Bean，Spring生成的Bean名称是把第一个字母变成小写，其他不变
+   2. 如果长度大于1，并且前两个字母都是大写，则是什么都不改变。
++ 使用@Autowired注解，但仍然出现空指针
+   1. 不理解Spring的自动装配机制，错误的使用new是很常见。
+       1. 属性对象虽然注入了，但当前类没有标记为Springbean
+       2. 当前类标记为SpringBean, 且属性对象也注入了，但是使用了new 去获取类对象
+   2. 没有理解Spring默认的包扫描机制，扫描不到顶的Bean
+       1. Spring默认的包扫描机制是当前包以及子包下的所有目录，但是你却把Bean定在主包外面。
+   3. Spring的componentScan注解。可以自主的制定Spring的扫描范围。
++ Spring 获取上下文
+   1. Spring容器的核心是负责管理对象，且并不只是帮我们创建对象，它负责了对象整个生命周期的管理-创建-装配-销毁 
+   2. 应用上下文可以认为是Spring容器的一种实现，也就是用于操作容器的容器类对象。把需要管理的对象放入容器中，取得容器中的Bean
+   3. Spring核心是容器，但是容器并不唯一
+        1. 不常用的容器实现。BeanFactory。最简单的容器，提供基本的DI功能
+        2. 高级实现。继承BeanFactory派生的应用上下文-ApplicationContext。解析配置文件，注册管理Bean
+   4. 获取应用上下文的四种方式
+        1.  ApplicationContextInitializer：容器创建完成之后的回调
+        2.  ApplicationListener ： 观察者模式的典型应用。
+        3.  Springboot启动程序的返回 
+        4.  ApplicationContextAware ：Spring的Aware接口。Aware可以理解为感觉的，注意到的，感知到的。
++ 多线程下Spring bean的数据
+   1. Spring提供的bean scope :默认为单例Bean时。处理多次请求时，Spring容器只会实例化一个Bean，也就是说Bean是公共的 。 
+   2. 自主制定的原型模式Bean。对于每一次请求，Spring容器都会实例化新的Bean，这个Bean是独占的。
++ 多个可用Bean异常
