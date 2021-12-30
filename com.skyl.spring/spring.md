@@ -146,3 +146,29 @@
    1. Spring提供的bean scope :默认为单例Bean时。处理多次请求时，Spring容器只会实例化一个Bean，也就是说Bean是公共的 。 
    2. 自主制定的原型模式Bean。对于每一次请求，Spring容器都会实例化新的Bean，这个Bean是独占的。
 + 多个可用Bean异常
+   1. @Autowired。属于Spring框架。默认使用类型（byType）进行注入
+   2. @Qualifier。结果@Autowired一起使用，自动注入策略由byType变成byName
+   3. @Resoure：JavaEE自带的注释。默认按byName自动注入
+   4. @Primary：存在多个相同类型的Bean，则@Primary用于定义首选项
++ SpringBean 循环依赖。使用三级缓存策略解决循环依赖
+   1. 一级缓存。用户存放完全初始化好的Bean
+   2. 二级缓存。存放原始的Bean对象，尚未填充属性，用于解决循环依赖
+   3. 三级缓存。存放bean工厂对象，用于解决循环依赖。
++ BeanFactoryPostProcessor 和 BeanPostProcessor
+   1. 关于BeanPostProcessor特性
+        1. Bean 后置处理器
+        2. 两个回调方法 
+            1. postProcessBeforeInitialization。每一个Bean对象初始化之前回调。
+            2. postProcessAfterInitialization。每一个Bean对象初始化之后回调
+        3. 在Bean实例化之后执行
+   2. BeanFactoryPostProcessor
+        1. BeanFactoryPostProcessor是在Spring容器加载Bean定义XML文件之后，Bean实例化之前执行
+        2. BeanFactoryPostProcessor的执行顺序在BeanPostProcessor之前
+        3. BeanFactoryPostProcessor 与 关于BeanPostProcessor 都是服务于Bean的生命周期中的，只是使用场景和作用略有不同。
++ Spring transactionnal注解但没有生效
+   1. 主动捕获了异常，导致事务不能回滚
+   2. 不是unchecked异常，事务不能回滚
+   3. unchecked异常可以回滚
+   4. 指定rollbackFor，事务可以回滚
+   5. 同一个类中，一个不标注事务的方法去调用了标注事务的方法，事务会失效
+        
